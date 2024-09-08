@@ -1,0 +1,110 @@
+{
+    "sessions": [
+      {
+        "SessionID": 1,
+        "Timestamp": "2024-08-12 09:00:00",
+        "NetworkTraffic": "200 MB",
+        "EnergyUsage": 30,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 2,
+        "Timestamp": "2024-08-12 10:00:00",
+        "NetworkTraffic": "220 MB",
+        "EnergyUsage": 32,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 3,
+        "Timestamp": "2024-08-12 11:00:00",
+        "NetworkTraffic": "210 MB",
+        "EnergyUsage": 35,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 4,
+        "Timestamp": "2024-08-12 12:00:00",
+        "NetworkTraffic": "350 MB",
+        "EnergyUsage": 50,
+        "EventType": "IncreasedTraffic"
+      },
+      {
+        "SessionID": 5,
+        "Timestamp": "2024-08-12 13:00:00",
+        "NetworkTraffic": "205 MB",
+        "EnergyUsage": 29,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 6,
+        "Timestamp": "2024-08-12 14:00:00",
+        "NetworkTraffic": "370 MB",
+        "EnergyUsage": 52,
+        "EventType": "IncreasedTraffic"
+      },
+      {
+        "SessionID": 7,
+        "Timestamp": "2024-08-12 15:00:00",
+        "NetworkTraffic": "400 MB",
+        "EnergyUsage": 80,
+        "EventType": "AbnormalCommand"
+      },
+      {
+        "SessionID": 8,
+        "Timestamp": "2024-08-12 16:00:00",
+        "NetworkTraffic": "195 MB",
+        "EnergyUsage": 28,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 9,
+        "Timestamp": "2024-08-12 17:00:00",
+        "NetworkTraffic": "215 MB",
+        "EnergyUsage": 33,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 10,
+        "Timestamp": "2024-08-12 18:00:00",
+        "NetworkTraffic": "380 MB",
+        "EnergyUsage": 53,
+        "EventType": "IncreasedTraffic"
+      },
+      {
+        "SessionID": 11,
+        "Timestamp": "2024-08-12 19:00:00",
+        "NetworkTraffic": "405 MB",
+        "EnergyUsage": 85,
+        "EventType": "AbnormalCommand"
+      },
+      {
+        "SessionID": 12,
+        "Timestamp": "2024-08-12 20:00:00",
+        "NetworkTraffic": "200 MB",
+        "EnergyUsage": 30,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 13,
+        "Timestamp": "2024-08-12 21:00:00",
+        "NetworkTraffic": "215 MB",
+        "EnergyUsage": 33,
+        "EventType": "NormalTraffic"
+      },
+      {
+        "SessionID": 14,
+        "Timestamp": "2024-08-12 22:00:00",
+        "NetworkTraffic": "390 MB",
+        "EnergyUsage": 55,
+        "EventType": "IncreasedTraffic"
+      },
+      {
+        "SessionID": 15,
+        "Timestamp": "2024-08-12 23:00:00",
+        "NetworkTraffic": "420 MB",
+        "EnergyUsage": 90,
+        "EventType": "AbnormalCommand"
+      }
+    ]
+  }
+  
