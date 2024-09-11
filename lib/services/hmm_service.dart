@@ -1,71 +1,54 @@
-///Hidden Markov Model (HMM) algorithm
-library;
+import 'dart:convert';
+import 'dart:math';  // Import the math library
+import 'package:http/http.dart' as http;
 
 class HMMService {
-  // Define the states and observations for HMM
-  final List<String> states = ['Normal', 'Attack'];
+  List<List<double>> transitionProbabilities = [];
+  List<List<double>> means = [];
+  List<List<double>> covariances = [];
 
-  // Define transition probabilities between states
-  final Map<String, Map<String, double>> transitionProbabilities = {
-    'Normal': {'Normal': 0.9, 'Attack': 0.1},
-    'Attack': {'Normal': 0.2, 'Attack': 0.8},
-  };
+  // Function to fetch HMM probabilities from the Python API
+  Future<void> fetchHMMProbabilities() async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:5000/get_hmm_probabilities'));
 
-  // Define emission probabilities for each state
-  final Map<String, Map<String, double>> emissionProbabilities = {
-    'Normal': {
-      'NormalTraffic': 0.7,
-      'IncreasedTraffic': 0.2,
-      'AbnormalCommand': 0.1
-    },
-    'Attack': {
-      'NormalTraffic': 0.1,
-      'IncreasedTraffic': 0.4,
-      'AbnormalCommand': 0.5
-    },
-  };
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      print("HMM Probabilities: $jsonResponse");
+      transitionProbabilities = (jsonResponse['transition_matrix'] as List)
+          .map((row) => List<double>.from(row))
+          .toList();
+      means = (jsonResponse['means'] as List)
+          .map((row) => List<double>.from(row))
+          .toList();
+      covariances = (jsonResponse['covariances'] as List)
+          .map((row) => List<double>.from(row))
+          .toList();
+    } else {
+      throw Exception('Failed to fetch HMM probabilities');
+    }
+  }
 
-  // Define initial state probabilities
-  final Map<String, double> initialProbabilities = {
-    'Normal': 0.8,
-    'Attack': 0.2,
-  };
-
-  // Forward algorithm for HMM
-  double forwardAlgorithm(List<String> observations) {
-    Map<String, double> alpha =
-        {}; // forward probabilities for the first observation
-
-    // Initialize forward probabilities for the first observation
-    for (var state in states) {
-      alpha[state] = initialProbabilities[state]! *
-          emissionProbabilities[state]![observations[0]]!;
+  // Forward algorithm for anomaly detection using the fetched probabilities
+  double forwardAlgorithm(List<double> observation) {
+    if (transitionProbabilities.isEmpty || means.isEmpty || covariances.isEmpty) {
+      throw Exception('HMM parameters not loaded');
     }
 
-    // Process remaining observations
-    for (int t = 1; t < observations.length; t++) {
-      Map<String, double> newAlpha = {};
-      for (var nextState in states) {
-        newAlpha[nextState] = 0;
-        for (var nextState in states) {
-          newAlpha[nextState] =
-              0.0; // Explicitly set to 0.0 to ensure it's not null
-          for (var currentState in states) {
-            double increment = alpha[currentState]! *
-                transitionProbabilities[currentState]![nextState]! *
-                emissionProbabilities[nextState]![observations[t]]!;
-            newAlpha[nextState] = newAlpha[nextState]! + increment;
-          }
-        }
+    List<double> likelihoods = [0.0, 0.0];
+
+    for (int state = 0; state < 2; state++) {
+      double likelihood = 1.0;
+      for (int i = 0; i < observation.length; i++) {
+        double diff = observation[i] - means[state][i];
+        likelihood *= (1 / sqrt(2 * pi * covariances[state][i])) *  // Use sqrt() from dart:math
+                      exp(-0.5 * (diff * diff) / covariances[state][i]);
       }
-      alpha = newAlpha;
+      likelihoods[state] = likelihood;
     }
 
-    // Sum over all final state probabilities
-    double totalProbability = 0;
-    for (var state in states) {
-      totalProbability += alpha[state]!;
-    }
-    return totalProbability;
+    double normalProbability = likelihoods[0] * transitionProbabilities[0][0];
+    double abnormalProbability = likelihoods[1] * transitionProbabilities[0][1];
+
+    return abnormalProbability / (normalProbability + abnormalProbability);
   }
 }

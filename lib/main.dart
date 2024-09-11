@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'EV Charging Anomaly Detector (Real-Time)',
-      theme: AppTheme.purplePinkTheme(),  // Apply the purple-pink theme
+      theme: AppTheme.purplePinkTheme(), // Apply the purple-pink theme
       home: const EVHomePage(),
     );
   }
@@ -31,15 +31,17 @@ class EVHomePage extends StatefulWidget {
 class EVHomePageState extends State<EVHomePage> {
   List<EVSession> evSessions = [];
   String anomalyStatus = "Waiting for data...";
-  String redirectionStatus = "";  // Separate status for path redirection
-  EVSession? latestAnomalySession;  // To store the most recent abnormal session
-  Color anomalyColor = Colors.black;  // Default color for waiting status
-  bool isGenerating = false;  // To track whether data generation is running
-  final EVController evController = EVController();  // Instantiate the controller
+  String redirectionStatus = ""; // Separate status for path redirection
+  EVSession? latestAnomalySession; // To store the most recent abnormal session
+  Color anomalyColor = Colors.black; // Default color for waiting status
+  bool isGenerating = false; // To track whether data generation is running
+  final EVController evController =
+      EVController(); // Instantiate the controller
 
   @override
   void dispose() {
-    evController.stopDataGeneration();  // Stop data generation when the app is closed
+    evController
+        .stopDataGeneration(); // Stop data generation when the app is closed
     super.dispose();
   }
 
@@ -47,7 +49,7 @@ class EVHomePageState extends State<EVHomePage> {
   void onDataGenerated(List<EVSession> sessions) {
     setState(() {
       // Insert the newest session at the beginning of the list
-      evSessions.insert(0, sessions.last); 
+      evSessions.insert(0, sessions.last);
     });
   }
 
@@ -56,18 +58,21 @@ class EVHomePageState extends State<EVHomePage> {
     setState(() {
       if (status.contains('Anomaly Detected')) {
         anomalyStatus = 'Anomaly Detected';
-        anomalyColor = Colors.red;  // Red for anomalies
-        
+        anomalyColor = Colors.red; // Red for anomalies
+
         // Parse the redirection status from the main status message
         redirectionStatus = status.split('|').last.trim();
-        
+
         // Find the most recent abnormal session
-latestAnomalySession = evSessions.firstWhere((session) => session.eventType == 'AbnormalCommand', orElse: () => EVSession.defaultData());        
+        latestAnomalySession = evSessions.firstWhere(
+            (session) => session.eventType == 'AbnormalCommand',
+            orElse: () => EVSession.defaultData());
       } else {
         anomalyStatus = 'System is Operating Normally';
-        anomalyColor = Colors.green;  // Green for normal operation
-        redirectionStatus = '';  // No redirection status when the system is normal
-        latestAnomalySession = null;  // Reset the anomaly session
+        anomalyColor = Colors.green; // Green for normal operation
+        redirectionStatus =
+            ''; // No redirection status when the system is normal
+        latestAnomalySession = null; // Reset the anomaly session
       }
     });
   }
@@ -91,14 +96,14 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
   // Function to format the timestamp to hh:mm:ss
   String formatTime(String timestamp) {
     DateTime parsedTime = DateTime.parse(timestamp);
-    return DateFormat('HH:mm:ss').format(parsedTime);  // Format to hr:min:sec
+    return DateFormat('HH:mm:ss').format(parsedTime); // Format to hr:min:sec
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text('EV Charging Anomaly Detector'),
+        title: const Text('EV Charging Anomaly Detector'),
       ),
       body: Column(
         children: [
@@ -113,29 +118,33 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: anomalyColor,  // Dynamic color change based on anomaly status
+                    color:
+                        anomalyColor, // Dynamic color change based on anomaly status
                   ),
                 ),
                 // Redirection Status (if anomaly detected)
                 if (redirectionStatus.isNotEmpty)
                   Text(
                     redirectionStatus,
-                    style:const TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.orangeAccent,  // Display redirection status in orange
+                      color: Colors
+                          .orangeAccent, // Display redirection status in orange
                     ),
                   ),
               ],
             ),
           ),
-          
+
           // Widget to display the most recent anomaly session
-          if (latestAnomalySession != null && latestAnomalySession!.sessionId > 0)
+          if (latestAnomalySession != null &&
+              latestAnomalySession!.sessionId > 0)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
-                color: Colors.red[50],  // Light red background to highlight the anomaly session
+                color: Colors.red[
+                    50], // Light red background to highlight the anomaly session
                 elevation: 5,
                 child: ListTile(
                   title: Text(
@@ -146,24 +155,28 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 4),
-                      Text('Network Traffic: ${latestAnomalySession!.networkTraffic}'),
+                      Text(
+                          'Network Traffic: ${latestAnomalySession!.networkTraffic}'),
                       const SizedBox(height: 4),
-                      Text('Energy Usage: ${latestAnomalySession!.energyUsage} kWh'),
+                      Text(
+                          'Energy Usage: ${latestAnomalySession!.energyUsage} kWh'),
                       const SizedBox(height: 4),
-                      Text('Generated at: ${formatTime(latestAnomalySession!.timestamp)}'),
+                      Text(
+                          'Generated at: ${formatTime(latestAnomalySession!.timestamp)}'),
                     ],
                   ),
                 ),
               ),
             ),
-          
+
           // Expanded list of EV charging sessions
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
                 itemCount: evSessions.length,
-                reverse: false,  // Newest data will be at the top due to insert(0, session)
+                reverse:
+                    false, // Newest data will be at the top due to insert(0, session)
                 itemBuilder: (context, index) {
                   EVSession session = evSessions[index];
                   return Card(
@@ -171,7 +184,7 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     elevation: 5,
-                    margin:const EdgeInsets.symmetric(vertical: 6),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: ListTile(
@@ -182,21 +195,23 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                         const   SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               'Network Traffic: ${session.networkTraffic}, Energy Usage: ${session.energyUsage} kWh',
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
-                         const   SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
-                              'Generated at: ${formatTime(session.timestamp)}',  // Display the formatted time
+                              'Generated at: ${formatTime(session.timestamp)}', // Display the formatted time
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
                         ),
                         trailing: (session.eventType == 'AbnormalCommand')
-                            ?const Icon(Icons.warning, color: Colors.redAccent, size: 30)
-                            :const Icon(Icons.check_circle, color: Colors.green, size: 30),
+                            ? const Icon(Icons.warning,
+                                color: Colors.redAccent, size: 30)
+                            : const Icon(Icons.check_circle,
+                                color: Colors.green, size: 30),
                       ),
                     ),
                   );
@@ -214,11 +229,15 @@ latestAnomalySession = evSessions.firstWhere((session) => session.eventType == '
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: isGenerating ? null : startGeneratingData,  // Disable if already running
+                      onPressed: isGenerating
+                          ? null
+                          : startGeneratingData, // Disable if already running
                       child: const Text('Start Generating'),
                     ),
                     ElevatedButton(
-                      onPressed: isGenerating ? stopGeneratingData : null,  // Disable if not running
+                      onPressed: isGenerating
+                          ? stopGeneratingData
+                          : null, // Disable if not running
                       child: const Text('Stop Generating'),
                     ),
                   ],
